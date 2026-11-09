@@ -6,7 +6,7 @@ class AppTheme {
     primaryColor: Colors.grey[900]!,
     scaffoldBackgroundColor: Colors.grey[850]!,
     appBarTheme: AppBarTheme(
-      color: Colors.grey[900]!,
+      backgroundColor: Colors.grey[900]!,
     ),
     colorScheme: ColorScheme.dark(
       primary: Colors.white,
