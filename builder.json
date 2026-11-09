@@ -1,0 +1,22 @@
+{
+  "project": "movie_seach_app",
+  "platform": "ios",
+  "github": {
+    "owner": "Arantesv",
+    "repo": "movie_seach_app"
+  },
+  "provider": "github",
+  "codemagic": {},
+  "bitrise": {},
+  "ios": {
+    "path": "ios",
+    "bundleId": "com.example.movie_search_app"
+  },
+  "flutter": {
+    "version": "3.47.9",
+    "watch": {}
+  },
+  "reactNative": {},
+  "kmp": {},
+  "mobai": {}
+}
