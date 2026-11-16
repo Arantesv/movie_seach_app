@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 class MovieReleaseDate extends StatelessWidget {
   const MovieReleaseDate({required this.releaseDate});
 
-  final String releaseDate;
+  final DateTime? releaseDate;
 
   @override
   Widget build(BuildContext context) {
@@ -16,13 +16,19 @@ class MovieReleaseDate extends StatelessWidget {
     return Row(
       children: [
         SizedBox(width: screenWidth * 0.003),
-        Icon(Icons.calendar_today, color: Colors.white, size: screenWidth * 0.04),
+        Icon(
+          Icons.calendar_today,
+          color: Colors.white,
+          size: screenWidth * 0.04,
+        ),
         SizedBox(width: screenWidth * 0.018),
-        Text(
-          releaseDate.split('-')[0],
-          style: TextStyle(
-            fontSize: screenWidth * 0.04,
-            color: Colors.grey[400],
+        Expanded(
+          child: Text(
+            releaseDate?.year.toString() ?? 'Ano não informado',
+            style: TextStyle(
+              fontSize: screenWidth * 0.04,
+              color: Colors.grey[400],
+            ),
           ),
         ),
       ],
