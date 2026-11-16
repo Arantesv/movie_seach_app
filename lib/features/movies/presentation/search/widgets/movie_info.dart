@@ -10,7 +10,7 @@ import 'package:movie_search_app/features/movies/presentation/search/widgets/mov
 /// de um filme, utilizando os widgets [MovieTitle], [MovieRating]
 /// e [MovieReleaseDate].
 class MovieInfo extends StatelessWidget {
-  const MovieInfo({required this.movie});
+  const MovieInfo({super.key, required this.movie});
 
   final MovieSummary movie;
 

@@ -20,7 +20,7 @@ void main() {
     act: (cubit) => cubit.search(' Movie (2020) '),
     expect: () => [
       const SearchLoading(),
-      SearchSuccess([testMovie]),
+      SearchSuccess(const [testMovie]),
     ],
     verify: (_) =>
         expect(repository.queries, [const MovieQuery('Movie', year: '2020')]),
@@ -49,7 +49,7 @@ void main() {
       const SearchLoading(),
       SearchFailure(const AppFailure(FailureKind.connection).message),
       const SearchLoading(),
-      SearchSuccess([testMovie]),
+      SearchSuccess(const [testMovie]),
     ],
     verify: (_) => expect(repository.queries, [
       const MovieQuery('Movie'),
@@ -71,7 +71,7 @@ void main() {
         old.complete([]);
       }
       await pending;
-      expect(cubit.state, SearchSuccess([testMovie]));
+      expect(cubit.state, SearchSuccess(const [testMovie]));
       await cubit.close();
     }
   });

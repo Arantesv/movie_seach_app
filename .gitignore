@@ -46,3 +46,6 @@ app.*.map.json
 /dist/
 /config/*.local.json
 .fvm/
+
+# Test reports
+/coverage/

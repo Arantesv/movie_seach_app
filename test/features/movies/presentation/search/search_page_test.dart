@@ -46,7 +46,7 @@ void main() {
     expect(find.text('Test movie'), findsOneWidget);
     expect(find.text('Ano não informado'), findsOneWidget);
     final count = repository.queries.length;
-    await tester.pumpWidget(MaterialApp(home: const SizedBox()));
+    await tester.pumpWidget(const MaterialApp(home: SizedBox()));
     await tester.pump();
     expect(repository.queries, hasLength(count));
     expect(tester.takeException(), isNull);
