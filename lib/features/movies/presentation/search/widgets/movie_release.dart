@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 /// O [MovieReleaseDate] mostra o ano de lançamento de um filme,
 /// extraído da data completa fornecida através de [releaseDate].
 class MovieReleaseDate extends StatelessWidget {
-  const MovieReleaseDate({required this.releaseDate});
+  const MovieReleaseDate({super.key, required this.releaseDate});
 
   final DateTime? releaseDate;
 

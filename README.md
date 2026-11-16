@@ -1,137 +1,95 @@
+# Movie Search App
 
-# 🎥 Movie Search App - Flutter
+Aplicativo Flutter para explorar e buscar filmes no [TMDB](https://www.themoviedb.org/). Criado originalmente para um processo seletivo e retomado como projeto de portfólio, com foco em organização, estado previsível e testes.
 
-Este aplicativo de busca de filmes foi desenvolvido para um processo seletivo, com o objetivo de facilitar a exploração de filmes para entusiastas de cinema. Utilizando a API do TMDB (The Movie Database), o app permite aos usuários buscar títulos específicos e navegar por em cartaz, melhor avaliados e populares.
+## Funcionalidades
 
-## Screenshots 📱
+- Categorias de filmes populares, melhor avaliados e próximos lançamentos.
+- Busca manual por título, com filtro opcional no formato `Harry Potter (2009)`.
+- Resultados ordenados por data de lançamento decrescente e depois por título.
+- Detalhes com sinopse, elenco, direção, ficha técnica, trailer e similares.
+- Retry independente por categoria e seção, estados de vazio e erro e preservação da busca ao navegar.
 
-![home](https://i.imgur.com/vTna4Z4.png)
-![search](https://i.imgur.com/uKMvaxJ.png)
-![deitails](https://i.imgur.com/3YHrZKl.png)
-![details2](https://i.imgur.com/jsD9fDJ.png)
+O rótulo legado “Em Cartaz” ainda usa o endpoint `upcoming`. A correção desse comportamento está fora desta reestruturação. As listas mostram a primeira página retornada pelo TMDB; paginação é uma evolução futura.
 
+## Executar
 
-## Funcionalidades ⚙️
+Pré-requisitos: Flutter **3.47.9** (Dart **3.13.7** no ambiente validado), dispositivo ou emulador. Android requer Android SDK e JDK 17; iOS requer macOS e Xcode.
 
-- Tela Inicial:
-    - Exibe os filmes mais populares, os mais bem avaliados e os que estão atualmente em cartaz nos cinemas.
-- Tela de busca:
-    - Permite aos usuários buscar filmes pelo título.
-    - Apresenta os resultados ordenados pelo ano de lançamento (do mais recente ao mais antigo) e, em seguida, em ordem alfabética.
-    - Mostra o título em português do filme, ano de lançamento e avalição no TMDB.
-    - O usuário pode pesquisar um filme e filtrar por um ano específico, adicionando-o entre parênteses no final do título. Exemplo: "Harry Potter (2009)".
-- Tela de detalhes do filme:
-    - Ao selecionar um filme, são fornecidas informações detalhadas:
-    - Título Original;
-    - Avalição no TMDB (com quantidade de votos);
-    - Data de lançamento;
-    - Gêneros
-    - Trailer;
-    - Sinopse;
-    - Elenco principal;
-    - Direção;
-    - Idioma original;
-    - Orçamento e Receita;
-    - Filmes Similares.
+A versão está fixada em `.fvmrc`. Se usar FVM, execute `fvm install` e prefixe os comandos Flutter/Dart com `fvm`. `flutter pub upgrade` atualiza dependências; o SDK é atualizado separadamente com Flutter/FVM.
 
+```sh
+flutter --version
+flutter pub get --enforce-lockfile
+```
 
-## API 🌐
+Crie uma credencial no [TMDB](https://developer.themoviedb.org/docs/getting-started), copie `config/example.json` para `config/development.local.json` e preencha `TMDB_API_KEY` somente na cópia local, ignorada pelo Git.
 
-Este aplicativo utiliza a API do The Movie Database (TMDB) para buscar, filtrar e exibir informações detalhadas sobre filmes. 
+```sh
+flutter run --dart-define-from-file=config/development.local.json
+```
 
-### Funcionalidades
+Também é possível usar `--dart-define=TMDB_API_KEY=<sua-chave>`. Sem configuração, o app exibe uma mensagem de orientação e não inicia chamadas ao catálogo. Uma chave embarcada em app mobile pode ser extraída do binário; `dart-define` evita versionar o valor, mas não é um cofre de segredos. Rotacione a credencial da versão original antes de usar uma nova configuração.
 
-- **Busca de Filmes:**  
-  O método `searchMovies` permite buscar filmes por título e, opcionalmente, filtrar os resultados por ano de lançamento.
+## Arquitetura
 
-- **Detalhes de Filmes:**  
-  O método `getMovieDetails` obtém informações detalhadas de um filme específico, incluindo sinopse, elenco, e direção. Utiliza o parâmetro `append_to_response=credits` para incluir os diretoes do filme na resposta.
+```text
+lib/
+  main.dart                    # Entrada
+  app/                         # Bootstrap, providers, navegação e tema
+  core/                        # Configuração, HTTP e falhas
+  features/movies/
+    models/                    # MovieSummary, MovieDetails, CastMember e consulta
+    repositories/              # Contrato MoviesRepository
+    data/                      # Serviço TMDB, mappers e repositório
+    presentation/
+      home/                    # Cubit, página e widgets das categorias
+      search/                  # Cubit, página e widgets de busca
+      movie_details/           # Cubit, página e widgets de detalhes
+      shared/                  # Estados e widgets compartilhados
+```
 
-- **Elenco de Filmes:**  
-  O método `getMovieCast` retorna uma lista dos principais membros do elenco de um filme.
+Fluxo: **widget → Cubit → MoviesRepository → serviço TMDB → cliente HTTP**. A resposta é convertida pelos mappers antes de voltar à apresentação. Dependências são injetadas por construtor e compostas no bootstrap. O cliente HTTP é fechado pelo provider responsável por sua criação.
 
-- **Trailer de Filmes:**  
-  O método `getMovieTrailer` busca o trailer do filme em diferentes idiomas, retornando o primeiro resultado válido.
+Cada seção possui estado independente. Cubits ignoram respostas antigas e conclusões após o fechamento; widgets não iniciam rede no `build`. A aba selecionada continua como estado local com `setState`, e `IndexedStack` preserva as páginas. O launcher de trailer é uma dependência da página, testada separadamente do estado do filme.
 
-- **Filmes Similares:**  
-  O método `getSimilarMovies` retorna uma lista de filmes similares ao filme especificado.
+Decisões e trade-offs: [ADR de arquitetura](docs/adr/0001-feature-first-cubit.md). Vocabulário: [CONTEXT.md](CONTEXT.md).
 
-- **Listas de Filmes:**  
-  Métodos como `fetchUpcomingMovies`, `fetchTopRatedMovies`, e `fetchPopularMovies` são usados para obter listas de filmes que estão por vir, filmes bem avaliados e filmes populares.
-  
-## Referências 📚
+## Qualidade
 
-Aqui estão algumas referências que foram utilizadas no desenvolvimento deste projeto:
+```sh
+dart format --output=none --set-exit-if-changed lib test
+flutter analyze
+flutter test
+flutter test --coverage
+flutter build apk --debug --dart-define-from-file=config/development.local.json
+```
 
-- **Primeiro App Flutter:**  
-   Vídeo introdutório que ajuda a criar seu primeiro aplicativo no Flutter: [YouTube](https://youtu.be/Zqz_76JYPSc)
+Os testes cobrem parsing e ordenação, contrato HTTP, falhas, transições de estado, concorrência, ciclo de vida, retries e navegação. Não dependem de rede nem de credenciais reais.
 
-- **Parâmetros de Imagens do TMDB:**  
-   Guia para entender os parâmetros de imagem na API TMDB: [TMDB Talk](https://www.themoviedb.org/talk/5aeaaf56c3a3682ddf0010de)
+A CI executa `Quality` (formatação, análise e testes) e `Android debug` (empacotamento). O APK gerado pela CI não contém credencial TMDB e abre a orientação de configuração. O teste real com TMDB deve usar um build configurado localmente.
 
-- **Estruturação de Widgets no Flutter:**  
-   Vídeo que aborda como estruturar widgets em um projeto Flutter: [YouTube](https://youtu.be/IOyq-eTRhvo)
+Consulte o [registro de validação](docs/validation.md) para distinguir testes automatizados, builds e verificações ainda pendentes em dispositivos.
 
-- **Axis Alignment no Flutter:**  
-    Tutorial sobre alinhamento de eixos no Flutter: [YouTube](https://youtu.be/S5P-rWFGZkI)
+## Desenvolvimento e versões
 
-- **Bottom App Bar:**  
-   Tutorial de como implementar o `bottomNavigationBar`: [Youtube](https://youtu.be/dryIXZJ8lDk)
+Adotamos GitFlow simplificado: branches de trabalho → PR para `develop` → `release/*` → PR para `main` → tag. Hotfixes partem de `main` e são sincronizados em `develop`. Commits e títulos de PR seguem Conventional Commits.
 
-- **Material Page Route**  
-   Vídeo mostrando como utilizar o `MaterialPageRoute` para navegar entre telas: [YouTube](https://youtu.be/Wgl7yj8Uidg)
+Veja [CONTRIBUTING.md](CONTRIBUTING.md) para comandos, convenções e critérios de release.
 
-- **Gerenciamento de Estado (MainState):**  
-   Documentação oficial do Flutter sobre gerenciamento de estado: [Docs Flutter](https://docs.flutter.dev/data-and-backend/state-mgmt/ephemeral-vs-app)
+## Interface original
 
-- **Cartão de Filmes:**  
-   Tutorial sobre como criar um cartão de filmes implementando na tela de pesquisa: [YouTube](https://youtu.be/AniCEAbmibA)
+O visual foi preservado nesta etapa. Estas imagens documentam a versão original:
 
-- **Arredondar Bordas de Imagens:**  
-   Tutorial sobre `ClipRRect` para arredondar bordas de imagens no Flutter: [YouTube](https://youtu.be/eI43jkQkrvs)
+![Tela inicial original](https://i.imgur.com/vTna4Z4.png)
+![Busca original](https://i.imgur.com/uKMvaxJ.png)
+![Detalhes originais](https://i.imgur.com/3YHrZKl.png)
+![Ficha técnica original](https://i.imgur.com/jsD9fDJ.png)
 
-- **Uso do FutureBuilder:**  
-   Vídeo explicando como utilizar o `FutureBuilder` no Flutter: [YouTube](https://youtu.be/zEdw_1B7JHY)
+As [referências originais](docs/references.md) foram mantidas para registrar as fontes usadas no desenvolvimento inicial.
 
-- **Widgets Stateful:**  
-    Tutorial sobre como criar widgets Stateful no Flutter: [YouTube](https://youtu.be/mIqbraKbgyA)
+## Próximas etapas
 
-- **Criação de App Intuitivo com TMDB API:**  
-   Tutorial sobre como criar um aplicativo intuitivo utilizando a API do TMDB: [Medium](https://medium.com/@przyczynski/flutter-creating-an-intuitive-app-based-on-the-movie-database-api-90a07b989bf9)
+Smoke test Android e validação iOS, correção da categoria “Em Cartaz”, paginação, favoritos, persistência e evolução visual serão tratados separadamente.
 
-- **Modelo de App para Consumo da API TMDB:**  
-   Tutorial detalhado sobre como criar um aplicativo para consumir a API de filmes do TMDB: [Medium](https://medium.com/flutter-comunidade-br/criando-um-aplicativo-em-flutter-para-consumir-uma-api-de-filmes-tmdb-2b5a9982bfcd)
-
-- **Guia Completo da API TMDB:**  
-    Vídeo sobre como consumir a API do TMDB no Flutter: [YouTube](https://youtu.be/1uxnXwN0s5Q)
-
-- **Append to Response na API do TMDB:**  
-    Guia oficial sobre o uso do parâmetro `append_to_response` para adicionar informações extras na resposta da API em uma única requisição: [TMDB Docs](https://developer.themoviedb.org/docs/append-to-response)
-
-- **Uso de Expressão Regular para Cortar String (YYYY):**  
-    Documentação oficial sobre o uso de `RegExp` no Dart: [API Flutter](https://api.flutter.dev/flutter/dart-core/RegExp-class.html)
-
-- **Trailers na TMDB API:**  
-    Discussão sobre como trabalhar com trailers na API TMDB: [TMDB Talk](https://www.themoviedb.org/talk/62db7e45ea84c7004fc5a8c7)
-
-- **Formato de Moeda em Dólares:**  
-    Guia sobre como formatar números utilizando `NumberFormat` no Flutter: [API Flutter](https://api.flutter.dev/flutter/intl/NumberFormat/NumberFormat.currency.html)
-
-- **Carrossel de Filmes:**  
-    Tutorial sobre como criar um carrossel de filmes com `carousel_slider` no Flutter: [YouTube](https://youtu.be/hkExmbmsCvQ)  
-    Código de referência para carrossel de filmes implementado na página inicial: [GitHub](https://github.com/ShubhGupta001/PopcornFlix/blob/main/lib/widgets/trending_slider_series.dart#L6)
-
-- **Bloqueio de Modo Paisagem:**  
-    Solução para bloquear a rotação da tela no Flutter: [Stack Overflow](https://stackoverflow.com/questions/49418332/flutter-how-to-prevent-device-orientation-changes-and-force-portrait)
-
-- **Uso de TextOverflow:**  
-    Solução para lidar com overflow de texto no Flutter: [Stack Overflow](https://stackoverflow.com/a/54222581)
-
-- **Guia Documentação do Dart:**  
-   Guia oficial do Dart de como fazer uma documentação efetiva: [Dart Dev](https://dart.dev/effective-dart/documentation)
-
-## Possíveis Melhorias 🔧
-
-Para futuras versões, é necessário implementar uma adaptação para o modo paisagem em celulares e tablets, a fim de aprimorar a responsividade e oferecer uma melhor experiência de uso em diferentes orientações de tela. 
-
-Além disso, o design do aplicativo pode ser aprimorado. Como esta foi minha primeira experiência na criação de layouts, acredito que há diversas oportunidades para melhorias no visual e na usabilidade, tornando a interface mais intuitiva e atraente.
+Este produto usa a API do TMDB, mas não é endossado ou certificado pelo TMDB.

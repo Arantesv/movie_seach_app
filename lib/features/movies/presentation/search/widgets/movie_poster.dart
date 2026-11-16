@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 /// fornecido por [posterPath]. Se o caminho estiver vazio, exibe um
 /// espaço cinza com um ícone de filme em vez do pôster.
 class MoviePoster extends StatelessWidget {
-  const MoviePoster({required this.posterPath});
+  const MoviePoster({super.key, required this.posterPath});
 
   final String posterPath;
 

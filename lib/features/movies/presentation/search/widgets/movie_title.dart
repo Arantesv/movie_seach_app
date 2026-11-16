@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 /// Exibe o título do filme.
 class MovieTitle extends StatelessWidget {
-  const MovieTitle({required this.title});
+  const MovieTitle({super.key, required this.title});
 
   final String title;
 
