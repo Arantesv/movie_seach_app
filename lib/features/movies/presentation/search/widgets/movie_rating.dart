@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 /// Exibe a avaliação de um filme com uma estrela e o valor numérico.
 ///
-/// O [MovieRating] mostra uma estrela laranja seguida pelo valor da avaliação 
+/// O [MovieRating] mostra uma estrela laranja seguida pelo valor da avaliação
 /// do filme, formatado com duas casas decimais.
 class MovieRating extends StatelessWidget {
   const MovieRating({required this.rating});

@@ -1,22 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:movie_search_app/models/movie.dart';
-import 'package:movie_search_app/screens/movie_details/movie_detail_screen.dart';
-import 'package:movie_search_app/screens/search/sections/movie_info.dart';
-import 'package:movie_search_app/screens/search/widgets/movie_poster.dart';
+import 'package:movie_search_app/features/movies/models/movie_summary.dart';
+import 'package:movie_search_app/app/navigation/app_navigator.dart';
+import 'package:movie_search_app/features/movies/presentation/search/widgets/movie_info.dart';
+import 'package:movie_search_app/features/movies/presentation/search/widgets/movie_poster.dart';
 
 /// Seção que exibe os filmes resultante da busca do usuário.
 ///
-/// [movie] é o objeto [Movie] que contém as informações do filme.
+/// [movie] é o objeto [MovieSummary] que contém as informações do filme.
 /// [onTap] é uma função que será executada quando o item for clicado.
 class MovieListSection extends StatelessWidget {
-  final Movie movie;
+  final MovieSummary movie;
   final VoidCallback? onTap;
 
-  const MovieListSection({
-    super.key,
-    required this.movie,
-    this.onTap,
-  });
+  const MovieListSection({super.key, required this.movie, this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -44,14 +40,7 @@ class MovieListSection extends StatelessWidget {
     );
   }
 
-  /// Navega para a tela de detalhes do filme com o [movieId] fornecido.
   void _navigateToMovieDetail(BuildContext context, int movieId) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => MovieDetailScreen(movieId: movieId),
-      ),
-    );
+    AppNavigator.openMovieDetails(context, movieId);
   }
 }
-
