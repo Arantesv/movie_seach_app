@@ -64,6 +64,6 @@ Os checks obrigatórios são `Quality` e `Android debug`. Testes usam HTTP simul
 
 ## Release
 
-Após integrar as entregas em `develop`, crie `release/1.0.0`. Confira a versão `1.0.0+1`, os checks e o smoke test Android com credencial local. Valide iOS em macOS antes de declarar suporte iOS validado. Registre os resultados em `docs/validation.md`.
+Após integrar as entregas em `develop`, crie `release/1.1.0`. Confira a versão `1.1.0+2`, os checks e o smoke test Android com credencial local. Valide iOS em macOS antes de declarar suporte iOS validado. Registre os resultados em `docs/validation.md`.
 
-Com esses critérios atendidos, integre a release por PR em `main`, crie a tag anotada `v1.0.0` no commit integrado e sincronize `develop` por PR. Não publique tag de versão estável enquanto a validação de dispositivo estiver pendente. Versões futuras seguem SemVer e incrementam o número de build.
+Com esses critérios atendidos, integre a release por PR em `main`, crie a tag anotada `v1.1.0` no commit integrado e sincronize `develop` por PR. Não publique tag de versão estável enquanto a validação de dispositivo estiver pendente. Versões futuras seguem SemVer e incrementam o número de build.

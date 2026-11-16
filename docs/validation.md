@@ -38,6 +38,8 @@ iOS requer macOS/Xcode e ainda não foi validado nesta etapa. Os workflows de di
 - Registrar a evidência do smoke test Android com credencial local.
 - Conferir os checks da PR de release antes da tag estável.
 
-## Preparação da versão 1.0.0
+## Preparação da versão 1.1.0
 
-As cinco entregas foram integradas por PR em `develop`. A branch `release/1.0.0` prepara a comparação final com `main`, com versão `1.0.0+1`. A PR de release permanece como rascunho e não há tag estável enquanto o smoke test com TMDB estiver pendente.
+As cinco entregas foram integradas por PR em `develop`. A branch `release/1.1.0` prepara a comparação final com `main`, com versão `1.1.0+2`. A PR de release permanece como rascunho e nenhuma nova tag estável será criada enquanto o smoke test com TMDB estiver pendente.
+
+A release e a tag `v1.0.0` já existiam desde 2024-08-20 e foram preservadas. Esta evolução usa `1.1.0+2` para não sobrescrever a versão publicada.
