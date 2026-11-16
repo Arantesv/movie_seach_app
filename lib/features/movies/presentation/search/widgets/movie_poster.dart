@@ -1,3 +1,4 @@
+import 'package:movie_search_app/features/movies/presentation/shared/widgets/tmdb_image.dart';
 import 'package:flutter/material.dart';
 
 /// Exibe o pôster do filme no resultado da pesquisa.
@@ -18,23 +19,11 @@ class MoviePoster extends StatelessWidget {
 
     return ClipRRect(
       borderRadius: BorderRadius.circular(screenWidth * 0.02),
-      child: posterPath.isNotEmpty
-          ? Image.network(
-              'https://image.tmdb.org/t/p/w185$posterPath',
-              width: posterWidth,
-              height: posterHeight,
-              fit: BoxFit.cover,
-            )
-          : Container(
-              width: posterWidth,
-              height: posterHeight,
-              color: Colors.grey[700],
-              child: Icon(
-                Icons.movie,
-                color: Colors.white70,
-                size: posterWidth * 0.5,
-              ),
-            ),
+      child: TmdbImage(
+        path: posterPath,
+        width: posterWidth,
+        height: posterHeight,
+      ),
     );
   }
 }

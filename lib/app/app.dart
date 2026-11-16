@@ -4,7 +4,8 @@ import 'package:movie_search_app/app/theme/app_theme.dart';
 import 'package:movie_search_app/features/movies/presentation/search/cubit/search_cubit.dart';
 import 'package:movie_search_app/features/movies/presentation/search/pages/search_page.dart';
 import 'package:movie_search_app/features/movies/repositories/movies_repository.dart';
-import 'package:movie_search_app/screens/home/home_screen.dart';
+import 'package:movie_search_app/features/movies/presentation/home/pages/home_page.dart';
+import 'package:movie_search_app/features/movies/presentation/home/cubit/home_cubit.dart';
 
 class MoviesApp extends StatelessWidget {
   const MoviesApp({super.key});
@@ -13,8 +14,16 @@ class MoviesApp extends StatelessWidget {
   Widget build(BuildContext context) => MaterialApp(
     title: 'Movie Search App',
     theme: AppTheme.darkTheme,
-    home: BlocProvider(
-      create: (context) => SearchCubit(context.read<MoviesRepository>()),
+    home: MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) =>
+              HomeCubit(context.read<MoviesRepository>())..load(),
+        ),
+        BlocProvider(
+          create: (context) => SearchCubit(context.read<MoviesRepository>()),
+        ),
+      ],
       child: const MainPage(),
     ),
   );
@@ -36,7 +45,7 @@ class _MainPageState extends State<MainPage> {
     return Scaffold(
       body: IndexedStack(
         index: _selectedIndex,
-        children: [HomeScreen(), const SearchPage()],
+        children: const [HomePage(), SearchPage()],
       ),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _selectedIndex,
