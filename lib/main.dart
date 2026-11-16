@@ -1,3 +1,4 @@
+import 'package:movie_search_app/core/config/app_config.dart';
 import 'package:flutter/material.dart';
 import 'package:movie_search_app/screens/home/home_screen.dart';
 import 'package:movie_search_app/screens/search/search_screen.dart';
@@ -5,19 +6,31 @@ import 'package:movie_search_app/theme/app_theme.dart';
 import 'package:flutter/services.dart';
 
 void main() {
+  final config = AppConfig.fromEnvironment();
+  if (!config.isConfigured) {
+    runApp(
+      const MaterialApp(
+        home: Scaffold(
+          body: Center(
+            child: Text('Configure TMDB_API_KEY para iniciar o aplicativo.'),
+          ),
+        ),
+      ),
+    );
+    return;
+  }
   runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-
     // Permite apenas a orientação do dispositivo no modo retrato.
     // Referência: https://stackoverflow.com/questions/49418332/flutter-how-to-prevent-device-orientation-changes-and-force-portrait
     SystemChrome.setPreferredOrientations([
-        DeviceOrientation.portraitUp,
-        DeviceOrientation.portraitDown,
-      ]);
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
     return MaterialApp(
       title: 'Movie Search App',
       theme: AppTheme.darkTheme,
@@ -40,10 +53,7 @@ class MainScreenState extends State<MainScreen> {
   int _selectedIndex = 0;
 
   // Lista de telas disponíveis para navegação.
-  final List<Widget> _screens = [
-    HomeScreen(),
-    SearchScreen(),
-  ];
+  final List<Widget> _screens = [HomeScreen(), SearchScreen()];
 
   // Altera a tela ativa ao selecionar um item no BottomNavigationBar.
   void _screenChange(int index) {

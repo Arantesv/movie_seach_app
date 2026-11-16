@@ -5,16 +5,12 @@ class AppTheme {
     brightness: Brightness.dark,
     primaryColor: Colors.grey[900]!,
     scaffoldBackgroundColor: Colors.grey[850]!,
-    appBarTheme: AppBarTheme(
-      color: Colors.grey[900]!,
-    ),
+    appBarTheme: AppBarTheme(backgroundColor: Colors.grey[900]!),
     colorScheme: ColorScheme.dark(
       primary: Colors.white,
       secondary: Colors.grey[600]!,
     ),
-    iconTheme: const IconThemeData(
-      color: Colors.white,
-    ),
+    iconTheme: const IconThemeData(color: Colors.white),
     inputDecorationTheme: InputDecorationTheme(
       filled: true,
       fillColor: Colors.grey[700],
@@ -30,5 +26,4 @@ class AppTheme {
       hintStyle: TextStyle(color: Colors.grey[500]),
     ),
   );
-
 }
