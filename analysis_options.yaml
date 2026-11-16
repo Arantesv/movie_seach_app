@@ -8,4 +8,3 @@ analyzer:
     - macos/**
     - linux/**
 include: package:flutter_lints/flutter.yaml
-
