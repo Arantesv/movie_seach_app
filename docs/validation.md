@@ -16,30 +16,26 @@ A [execução 43811827143](https://github.com/Arantesv/movie_seach_app/actions/r
 
 A base Android usa AGP 8.11.1, Gradle 8.14.3, Kotlin 2.2.20 e JDK 17. A compatibilidade de AGP com API 36/JDK 17 está documentada nas [notas oficiais do Android](https://developer.android.com/build/releases/agp-8-11-0-release-notes).
 
-## Validações de dispositivo pendentes
+## Build iOS validado na CI
 
-`flutter build apk --debug` foi tentado localmente e bloqueado pela ausência do Android SDK. O ambiente também não possui dispositivo Android conectado. O empacotamento foi validado na CI com Android SDK, mas não substitui a execução com TMDB em dispositivo.
+A [execução 44199671256](https://github.com/Arantesv/movie_seach_app/actions/runs/44199671256) gerou o IPA com configuração TMDB fornecida por GitHub Actions Secret. A correção foi integrada pela PR #8.
 
-Smoke test em Android real ou emulador, com credencial TMDB local:
+## Smoke tests e credenciais — 2026-11-17
 
-1. Abrir o app e conferir as três categorias.
-2. Buscar um título pelo botão e pelo teclado, incluindo `Título (2020)`.
-3. Abrir os detalhes e verificar dados, elenco e similares.
-4. Abrir o trailer no app externo ou navegador.
-5. Voltar e confirmar que consulta e resultados foram preservados.
-6. Trocar abas e confirmar que os dados não são recarregados desnecessariamente.
-7. Conferir mensagens de falha e tentar novamente após restabelecer a conexão.
+O autor confirmou nesta data a conclusão dos smoke tests em **Android e iOS** e a revogação da credencial TMDB antiga. A confirmação de execução nos dispositivos foi fornecida pelo autor; os testes automatizados e builds possuem evidências separadas na CI.
 
-iOS requer macOS/Xcode e ainda não foi validado nesta etapa. Os workflows de distribuição iOS preexistentes foram preservados.
+Cenários confirmados pelo autor:
 
-## Antes de publicar
+1. Carregamento das categorias.
+2. Busca por título e filtro por ano.
+3. Detalhes, elenco e filmes similares.
+4. Abertura de trailer.
+5. Retorno preservando consulta e resultados.
+6. Troca de abas sem recarregamento desnecessário.
+7. Tratamento de falhas de conexão e nova tentativa.
 
-- Rotacionar a credencial TMDB que esteve no histórico do repositório e configurar a nova apenas localmente.
-- Registrar a evidência do smoke test Android com credencial local.
-- Conferir os checks da PR de release antes da tag estável.
+## Versão 1.1.0
 
-## Preparação da versão 1.1.0
+Critérios de validação atendidos para fechamento da release `1.1.0+2`: checks automatizados aprovados, builds Android/iOS, smoke tests confirmados pelo autor e revogação da credencial anterior confirmada.
 
-As cinco entregas foram integradas por PR em `develop`. A branch `release/1.1.0` prepara a comparação final com `main`, com versão `1.1.0+2`. A PR de release permanece como rascunho e nenhuma nova tag estável será criada enquanto o smoke test com TMDB estiver pendente.
-
-A release e a tag `v1.0.0` já existiam desde 2024-08-20 e foram preservadas. Esta evolução usa `1.1.0+2` para não sobrescrever a versão publicada.
+A release e a tag `v1.0.0`, publicadas em 2024-08-20, foram preservadas. Esta evolução utiliza a versão `1.1.0+2`.
