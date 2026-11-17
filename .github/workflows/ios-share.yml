@@ -538,6 +538,23 @@ jobs:
         if: steps.detect.outputs.type == 'kmp'
         uses: gradle/actions/setup-gradle@v6
 
+      - name: Configure TMDB for Flutter
+        if: steps.detect.outputs.type == 'flutter'
+        env:
+          TMDB_API_KEY: ${{ secrets.TMDB_API_KEY }}
+        run: |
+          python3 - <<'PY'
+          import json, os
+          from pathlib import Path
+          key = os.environ.get('TMDB_API_KEY', '').strip()
+          if not key:
+              raise SystemExit('Missing repository secret TMDB_API_KEY. Configure it before building iOS.')
+          path = Path(os.environ['RUNNER_TEMP']) / 'tmdb-defines.json'
+          path.touch(mode=0o600, exist_ok=True)
+          path.chmod(0o600)
+          path.write_text(json.dumps({'TMDB_API_KEY': key}), encoding='utf-8')
+          PY
+
       - name: Build for the simulator
         id: build
         env:
@@ -550,7 +567,7 @@ jobs:
           if [ "$PROJECT_TYPE" = "flutter" ]; then
             # Flutter drives xcodebuild itself and puts the bundle in a known
             # place, so there is nothing to detect here.
-            flutter build ios --simulator --debug
+            flutter build ios --simulator --debug --dart-define-from-file="$RUNNER_TEMP/tmdb-defines.json"
             APP_PATH=$(find build/ios/iphonesimulator -maxdepth 1 -name '*.app' -print -quit)
           else
             cd "$IOS_PATH"
@@ -690,3 +707,7 @@ jobs:
       - name: Delete trigger tag
         if: always() && github.ref_type == 'tag'
         run: git push origin ":refs/tags/$GITHUB_REF_NAME"
+
+      - name: Remove temporary TMDB configuration
+        if: always() && steps.detect.outputs.type == 'flutter'
+        run: rm -f "$RUNNER_TEMP/tmdb-defines.json"
