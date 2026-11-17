@@ -31,6 +31,18 @@ flutter run --dart-define-from-file=config/development.local.json
 
 Também é possível usar `--dart-define=TMDB_API_KEY=<sua-chave>`. Sem configuração, o app exibe uma mensagem de orientação e não inicia chamadas ao catálogo. Uma chave embarcada em app mobile pode ser extraída do binário; `dart-define` evita versionar o valor, mas não é um cofre de segredos. Rotacione a credencial da versão original antes de usar uma nova configuração.
 
+## iPhone via MobAI e GitHub Actions
+
+Nos [secrets do repositório](https://github.com/Arantesv/movie_seach_app/settings/secrets/actions), crie um **Repository secret** chamado `TMDB_API_KEY`, usando a API Key do TMDB (não o Read Access Token). Não coloque o valor em `builder.json`, workflow, commit ou chat.
+
+Os workflows `ios-build.yml` e `ios-share.yml` criam uma configuração temporária no runner, passam `--dart-define-from-file` aos builds Flutter e removem o arquivo ao final. Se o secret estiver ausente, o build falha com uma mensagem de configuração. O arquivo local ignorado pelo Git não é enviado ao runner.
+
+O `builder v0.11.0` usa o workflow da branch padrão (`main`) no dispatch, embora envie um snapshot do código local. Portanto, `builder ios build` passa a usar esta integração quando o workflow corrigido estiver em `main`.
+
+Para validar antes da release, a alternativa documentada é disparar pelo tag temporário `ios-build/<id>` a partir do commit que contém o workflow corrigido; nesse caminho o GitHub usa o workflow do próprio tag. O workflow remove esse tag ao terminar. Após o build, baixe o artefato `ipa` para `dist/` e execute `builder dev flutter --ipa <caminho-do-ipa>`. Um IPA unsigned pode ser assinado localmente pelo MobAI durante a instalação. Não use `builder ios share` para o telefone físico: ele inicia um simulador na CI.
+
+Instale o novo build no iPhone e abra o app. Confirme categorias, busca por título e detalhes para validar a chave. Um IPA antigo não recebe a nova configuração; é preciso recompilar. O secret protege o valor no repositório e nos logs, mas a chave permanece extraível do aplicativo compilado.
+
 ## Arquitetura
 
 ```text
