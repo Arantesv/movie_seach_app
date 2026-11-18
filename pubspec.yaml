@@ -1,5 +1,7 @@
 name: movie_search_app
 description: Um buscador de filmes utilizando a API do The Movie Database.
+publish_to: none
+version: 1.1.0+2
 
 dependencies:
   flutter:
@@ -9,14 +11,18 @@ dependencies:
   sealed_languages: ^1.5.0
   url_launcher: ^6.3.0
   carousel_slider: ^5.0.0
+  flutter_bloc: ^9.1.1
+  equatable: ^3.0.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^4.0.0
+  bloc_test: ^10.0.0
 
 environment:
-  sdk: ">=2.17.0 <3.0.0"
+  sdk: ">=3.13.0 <4.0.0"
+  flutter: ">=3.47.9"
 
 flutter:
   uses-material-design: true

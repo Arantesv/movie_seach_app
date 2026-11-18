@@ -858,6 +858,23 @@ jobs:
           echo "  identity: $CODE_SIGN_IDENTITY"
           echo "The build writes these into the app target's build settings; its PRODUCT_BUNDLE_IDENTIFIER must match the app id above. Extension targets get the profiles listed above by bundle id."
 
+      - name: Configure TMDB for Flutter
+        if: steps.detect.outputs.type == 'flutter'
+        env:
+          TMDB_API_KEY: ${{ secrets.TMDB_API_KEY }}
+        run: |
+          python3 - <<'PY'
+          import json, os
+          from pathlib import Path
+          key = os.environ.get('TMDB_API_KEY', '').strip()
+          if not key:
+              raise SystemExit('Missing repository secret TMDB_API_KEY. Configure it before building iOS.')
+          path = Path(os.environ['RUNNER_TEMP']) / 'tmdb-defines.json'
+          path.touch(mode=0o600, exist_ok=True)
+          path.chmod(0o600)
+          path.write_text(json.dumps({'TMDB_API_KEY': key}), encoding='utf-8')
+          PY
+
       - name: Build IPA
         env:
           BUILD_ID: ${{ steps.params.outputs.build_id }}
@@ -1081,10 +1098,10 @@ jobs:
             fi
             if [ "$CONFIGURATION" = "Debug" ]; then
               echo "Building Flutter iOS Debug..."
-              flutter build ios --debug --no-codesign $FLUTTER_VERSION_FLAGS
+              flutter build ios --debug --no-codesign --dart-define-from-file="$RUNNER_TEMP/tmdb-defines.json" $FLUTTER_VERSION_FLAGS
             else
               echo "Building Flutter iOS Release..."
-              flutter build ios --release --no-codesign $FLUTTER_VERSION_FLAGS
+              flutter build ios --release --no-codesign --dart-define-from-file="$RUNNER_TEMP/tmdb-defines.json" $FLUTTER_VERSION_FLAGS
             fi
             cd "$IOS_PATH"
 
@@ -1338,3 +1355,7 @@ jobs:
       - name: Delete trigger tag
         if: always() && github.ref_type == 'tag'
         run: git push origin ":refs/tags/$GITHUB_REF_NAME"
+
+      - name: Remove temporary TMDB configuration
+        if: always() && steps.detect.outputs.type == 'flutter'
+        run: rm -f "$RUNNER_TEMP/tmdb-defines.json"

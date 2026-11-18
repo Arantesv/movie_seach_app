@@ -1,0 +1,41 @@
+# Registro de validação
+
+## Reestruturação — 2026-11-16
+
+- Flutter 3.47.9 / Dart 3.13.7 em Windows.
+- 39 testes automatizados de dados, Cubits, widgets e navegação passaram.
+- `flutter analyze --no-pub`: sem problemas após restauração dos lints padrão.
+- Credenciais reais não são usadas pelos testes.
+- O fluxo de widgets verifica busca manual, filtro por ano, troca de abas, abertura dos detalhes e retorno preservando consulta e resultados.
+- Rebuild da rota não gera novas consultas. Testes cobrem respostas fora de ordem, fechamento dos Cubits e retries independentes.
+- Launcher de trailer testado com app externo, fallback e falha nas duas opções; o sistema operacional não foi acionado por esses testes.
+
+## Build Android validado na CI
+
+A [execução 43811827143](https://github.com/Arantesv/movie_seach_app/actions/runs/43811827143), referente à PR de qualidade, passou nos jobs `Quality` e `Android debug`. O APK debug foi gerado e disponibilizado como artefato `android-debug-unconfigured`, sem credencial TMDB real embutida.
+
+A base Android usa AGP 8.11.1, Gradle 8.14.3, Kotlin 2.2.20 e JDK 17. A compatibilidade de AGP com API 36/JDK 17 está documentada nas [notas oficiais do Android](https://developer.android.com/build/releases/agp-8-11-0-release-notes).
+
+## Build iOS validado na CI
+
+A [execução 44199671256](https://github.com/Arantesv/movie_seach_app/actions/runs/44199671256) gerou o IPA com configuração TMDB fornecida por GitHub Actions Secret. A correção foi integrada pela PR #8.
+
+## Smoke tests e credenciais — 2026-11-17
+
+O autor confirmou nesta data a conclusão dos smoke tests em **Android e iOS** e a revogação da credencial TMDB antiga. A confirmação de execução nos dispositivos foi fornecida pelo autor; os testes automatizados e builds possuem evidências separadas na CI.
+
+Cenários confirmados pelo autor:
+
+1. Carregamento das categorias.
+2. Busca por título e filtro por ano.
+3. Detalhes, elenco e filmes similares.
+4. Abertura de trailer.
+5. Retorno preservando consulta e resultados.
+6. Troca de abas sem recarregamento desnecessário.
+7. Tratamento de falhas de conexão e nova tentativa.
+
+## Versão 1.1.0
+
+Critérios de validação atendidos para fechamento da release `1.1.0+2`: checks automatizados aprovados, builds Android/iOS, smoke tests confirmados pelo autor e revogação da credencial anterior confirmada.
+
+A release e a tag `v1.0.0`, publicadas em 2024-08-20, foram preservadas. Esta evolução utiliza a versão `1.1.0+2`.
