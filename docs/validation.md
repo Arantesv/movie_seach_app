@@ -59,3 +59,7 @@ A categoria agora usa `MovieCategory.nowPlaying`, endpoint `movie/now_playing`, 
 A execução Android anterior também verificou filtro por ano, estados vazio/erro inicial, detalhes, similares, trailer e preservação da posição entre abas. Evidências locais: `C:/Users/Administrator/Documents/movie-smoke-20261118/` (XML, screenshots e logs). O iOS não foi reexecutado nesta correção; não se presume novo smoke iOS a partir da validação anterior.
 
 `now_playing` é uma seleção regional do TMDB por janela de lançamentos, não uma confirmação de sessões em cinemas específicos. Datas principais e relançamentos podem diferir.
+
+## Release 1.2.0
+
+Versão 1.2.0+3: paginação da busca e categoria Em Cartaz regional. Smoke Android executado pelo agente em 2026-11-18; iOS não reexecutado. Os critérios automatizados são exigidos pelas PRs antes da integração.
