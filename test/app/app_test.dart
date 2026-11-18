@@ -37,6 +37,8 @@ void main() {
     (tester) async {
       final repository = FakeMoviesRepository();
       await start(tester, repository);
+      expect(find.text('Em Breve'), findsOneWidget);
+      expect(find.text('Em Cartaz'), findsNothing);
       expect(repository.categoryCalls.values, everyElement(1));
       await tester.tap(find.text('Buscar'));
       await tester.pumpAndSettle();
