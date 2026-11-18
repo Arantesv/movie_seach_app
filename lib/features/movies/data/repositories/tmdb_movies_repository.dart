@@ -1,3 +1,6 @@
+import 'dart:math' as math;
+
+import 'package:movie_search_app/features/movies/models/movie_search_page.dart';
 import 'package:movie_search_app/core/errors/app_failure.dart';
 import 'package:movie_search_app/features/movies/data/mappers/movie_mapper.dart';
 import 'package:movie_search_app/features/movies/data/services/tmdb_service.dart';
@@ -17,21 +20,50 @@ class TmdbMoviesRepository implements MoviesRepository {
   Future<List<MovieSummary>> getCategory(MovieCategory category) =>
       _guard(() async {
         final endpoint = switch (category) {
-          MovieCategory.upcoming => 'upcoming',
+          MovieCategory.nowPlaying => 'now_playing',
           MovieCategory.topRated => 'top_rated',
           MovieCategory.popular => 'popular',
         };
-        return _movies(await _service.category(endpoint));
+        return _movies(
+          await _service.category(
+            endpoint,
+            region: category == MovieCategory.nowPlaying ? 'BR' : null,
+          ),
+        );
       });
 
   @override
-  Future<List<MovieSummary>> search(MovieQuery query) => _guard(() async {
-    if (query.title.trim().isEmpty) return const <MovieSummary>[];
-    return _movies(
-      await _service.search(query.title, year: query.year),
-      year: query.year,
-    );
-  });
+  Future<MovieSearchPage> search(MovieQuery query, {int page = 1}) => _guard(
+    () async {
+      if (page < 1 || page > 500) throw RangeError.range(page, 1, 500, 'page');
+      if (query.title.trim().isEmpty) {
+        return MovieSearchPage(movies: const [], page: 1, totalPages: 0);
+      }
+      final data = await _service.search(
+        query.title,
+        year: query.year,
+        page: page,
+      );
+      final responsePage = data['page'];
+      final totalPages = data['total_pages'];
+      final rawMovies = data['results'] as List;
+      if (responsePage is! int ||
+          responsePage != page ||
+          totalPages is! int ||
+          totalPages < 0 ||
+          (totalPages == 0
+              ? page != 1 || rawMovies.isNotEmpty
+              : page > totalPages)) {
+        throw const AppFailure(FailureKind.invalidData);
+      }
+      return MovieSearchPage(
+        movies: _mapMovies(data, year: query.year),
+        page: responsePage,
+        // TMDB only exposes pages 1–500, even when total_pages is larger.
+        totalPages: math.min(totalPages, 500),
+      );
+    },
+  );
 
   @override
   Future<MovieDetails> getDetails(int movieId) => _guard(() async {
@@ -69,14 +101,19 @@ class TmdbMoviesRepository implements MoviesRepository {
   Future<List<MovieSummary>> getSimilar(int movieId) =>
       _guard(() async => _movies(await _service.similar(movieId)));
 
-  List<MovieSummary> _movies(Map<String, dynamic> data, {String? year}) {
+  List<MovieSummary> _mapMovies(Map<String, dynamic> data, {String? year}) {
     final movies = (data['results'] as List)
         .map((item) => MovieMapper.summary(item as Map<String, dynamic>))
         .where(
           (movie) => year == null || movie.releaseDate?.year.toString() == year,
         )
         .toList();
-    // Preserve the original ordering: release date descending, then title.
+    return movies;
+  }
+
+  List<MovieSummary> _movies(Map<String, dynamic> data) {
+    final movies = _mapMovies(data);
+    // Categories and similar movies retain their existing ordering.
     movies.sort((a, b) {
       final comparison =
           (b.releaseDate?.millisecondsSinceEpoch ?? -8640000000000000)

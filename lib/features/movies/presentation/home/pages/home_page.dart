@@ -30,7 +30,7 @@ class HomePage extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(switch (category) {
-                          MovieCategory.upcoming => 'Em Cartaz',
+                          MovieCategory.nowPlaying => 'Em Cartaz',
                           MovieCategory.topRated => 'Melhor Avaliados',
                           MovieCategory.popular => 'Populares',
                         }, style: TextStyle(fontSize: width * 0.05)),

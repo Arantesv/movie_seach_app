@@ -26,14 +26,14 @@ void main() {
         cubit.state.categories.values,
         everyElement(isA<LoadInProgress<List<MovieSummary>>>()),
       );
-      requests[MovieCategory.upcoming]!.complete([testMovie]);
+      requests[MovieCategory.nowPlaying]!.complete([testMovie]);
       requests[MovieCategory.topRated]!.completeError(
         const AppFailure(FailureKind.server),
       );
       requests[MovieCategory.popular]!.complete([]);
       await pending;
       expect(
-        cubit.state.categories[MovieCategory.upcoming],
+        cubit.state.categories[MovieCategory.nowPlaying],
         const LoadSuccess([testMovie]),
       );
       expect(
@@ -63,7 +63,7 @@ void main() {
       repository.onCategory = (_) async => [testMovie];
       await cubit.loadCategory(MovieCategory.popular);
       expect(repository.categoryCalls, {
-        MovieCategory.upcoming: 1,
+        MovieCategory.nowPlaying: 1,
         MovieCategory.topRated: 1,
         MovieCategory.popular: 2,
       });
@@ -101,7 +101,7 @@ void main() {
     final cubit = HomeCubit(repository);
     final pending = cubit.load();
     await cubit.close();
-    requests[MovieCategory.upcoming]!.complete([testMovie]);
+    requests[MovieCategory.nowPlaying]!.complete([testMovie]);
     requests[MovieCategory.topRated]!.completeError(Exception('private'));
     requests[MovieCategory.popular]!.complete([]);
     await expectLater(pending, completes);

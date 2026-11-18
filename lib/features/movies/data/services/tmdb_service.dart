@@ -5,14 +5,24 @@ class TmdbService {
 
   final TmdbClient _client;
 
-  Future<Map<String, dynamic>> category(String endpoint) =>
-      _client.get('movie/$endpoint');
-
-  Future<Map<String, dynamic>> search(String title, {String? year}) =>
+  Future<Map<String, dynamic>> category(String endpoint, {String? region}) =>
       _client.get(
-        'search/movie',
-        parameters: {'query': title, if (year != null) 'year': year},
+        'movie/$endpoint',
+        parameters: {if (region != null) 'region': region},
       );
+
+  Future<Map<String, dynamic>> search(
+    String title, {
+    String? year,
+    int page = 1,
+  }) => _client.get(
+    'search/movie',
+    parameters: {
+      'query': title,
+      'page': page.toString(),
+      if (year != null) 'year': year,
+    },
+  );
 
   Future<Map<String, dynamic>> details(int id, {String? language = 'pt-BR'}) =>
       _client.get(
