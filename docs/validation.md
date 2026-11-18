@@ -39,3 +39,13 @@ Cenários confirmados pelo autor:
 Critérios de validação atendidos para fechamento da release `1.1.0+2`: checks automatizados aprovados, builds Android/iOS, smoke tests confirmados pelo autor e revogação da credencial anterior confirmada.
 
 A release e a tag `v1.0.0`, publicadas em 2024-08-20, foram preservadas. Esta evolução utiliza a versão `1.1.0+2`.
+
+## Paginação da busca — 2026-11-17
+
+- “Em Cartaz” foi renomeado para “Em Breve”, mantendo o endpoint `upcoming` (PR #10).
+- A busca recebe páginas e metadados, preserva a ordem da API e elimina duplicatas por ID. O filtro local por ano permanece ativo.
+- 56 testes automatizados passaram localmente, junto com formatação e análise estática.
+- Os novos cenários cobrem concorrência, última página, limite de acesso do TMDB, metadados inválidos, páginas filtradas vazias, duplicatas, fechamento do Cubit, retry, conteúdo curto, aba inativa e preservação da posição ao navegar.
+- Smoke tests desta funcionalidade em Android/iOS serão executados manualmente pelo autor, conforme combinado. Permanecem pendentes; a confirmação da versão 1.1.0 acima não cobre automaticamente esta entrega.
+
+Roteiro pendente: buscar um título com várias páginas, rolar até carregar novas páginas, abrir detalhes e retornar, trocar abas, iniciar nova pesquisa e interromper a conexão durante a carga seguinte. Confirmar que o retry preserva os resultados e a posição.
