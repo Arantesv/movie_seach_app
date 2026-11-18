@@ -151,6 +151,11 @@ void main() {
     final paths = <String>[];
     final repo = repository((request) async {
       paths.add(request.url.path);
+      expect(request.url.queryParameters['language'], 'pt-BR');
+      expect(
+        request.url.queryParameters['region'],
+        request.url.path.endsWith('/now_playing') ? 'BR' : isNull,
+      );
       return json({
         'results': [movie(1, 'Missing', ''), movie(2, 'Dated', '2020-01-01')],
       });
@@ -159,7 +164,7 @@ void main() {
       expect((await repo.getCategory(category)).map((m) => m.id), [2, 1]);
     }
     expect(paths, [
-      '/3/movie/upcoming',
+      '/3/movie/now_playing',
       '/3/movie/top_rated',
       '/3/movie/popular',
     ]);
