@@ -10,6 +10,6 @@ Vocabulário usado para explorar títulos e seus créditos no TMDB.
 
 **Cast member**: participação de uma pessoa no elenco de um filme, com seu nome e personagem.
 
-**Upcoming**: filmes que o TMDB classifica como próximos lançamentos. O app antigo apresenta essa categoria com o rótulo “Em Cartaz”; a distinção permanece registrada para uma correção funcional separada.
+**Upcoming**: filmes que o TMDB classifica como próximos lançamentos. A categoria é apresentada no app como “Em Breve”.
 
 **Similar movies**: títulos relacionados a um filme conforme a seleção do TMDB.
