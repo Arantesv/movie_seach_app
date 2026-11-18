@@ -45,7 +45,10 @@ class _MainPageState extends State<MainPage> {
     return Scaffold(
       body: IndexedStack(
         index: _selectedIndex,
-        children: const [HomePage(), SearchPage()],
+        children: [
+          const HomePage(),
+          SearchPage(isActive: _selectedIndex == 1),
+        ],
       ),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _selectedIndex,

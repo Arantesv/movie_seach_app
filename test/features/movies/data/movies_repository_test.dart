@@ -56,14 +56,17 @@ void main() {
   });
 
   test(
-    'search encodes special characters, filters year and sorts date then title',
+    'search encodes special characters, filters year and preserves API order',
     () async {
       final repo = repository((request) async {
         expect(request.url.path, '/3/search/movie');
         expect(request.url.queryParameters['query'], 'A & B? São Paulo');
         expect(request.url.queryParameters['year'], '2020');
         expect(request.url.queryParameters['language'], 'pt-BR');
+        expect(request.url.queryParameters['page'], '2');
         return json({
+          'page': 2,
+          'total_pages': 3,
           'results': [
             movie(1, 'Z', '2020-01-01'),
             movie(2, 'Árvore', '2020-12-01'),
@@ -73,11 +76,16 @@ void main() {
           ],
         });
       });
-      final movies = await repo.search(
+      final result = await repo.search(
         const MovieQuery('A & B? São Paulo', year: '2020'),
+        page: 2,
       );
-      expect(movies.map((movie) => movie.id), [2, 3, 1]);
-      expect(movies.first.title, 'Árvore');
+      final movies = result.movies;
+      expect(result.page, 2);
+      expect(result.totalPages, 3);
+      expect(result.hasNextPage, isTrue);
+      expect(movies.map((movie) => movie.id), [1, 2, 3]);
+      expect(movies.first.title, 'Z');
       expect(movies.first.rating, 8.0);
       expect(() => movies.clear(), throwsUnsupportedError);
     },
@@ -85,8 +93,59 @@ void main() {
 
   test('empty search never calls HTTP', () async {
     final repo = repository((_) async => fail('Unexpected network request'));
-    expect(await repo.search(const MovieQuery(' ')), isEmpty);
+    expect((await repo.search(const MovieQuery(' '))).movies, isEmpty);
   });
+
+  test('search metadata handles empty, last, filtered and maximum accessible pages', () async {
+    final cases = [
+      {'page': 1, 'total_pages': 0, 'results': <Object>[]},
+      {'page': 2, 'total_pages': 2, 'results': <Object>[]},
+      {
+        'page': 1,
+        'total_pages': 3,
+        'results': [movie(1, 'Old', '2019-01-01')],
+      },
+      {'page': 500, 'total_pages': 900, 'results': <Object>[]},
+    ];
+    for (final data in cases) {
+      final repo = repository((_) async => json(data));
+      final result = await repo.search(
+        const MovieQuery('Movie', year: '2020'),
+        page: data['page'] as int,
+      );
+      expect(result.movies, isEmpty);
+      expect(
+        result.totalPages,
+        (data['total_pages'] as int) > 500 ? 500 : data['total_pages'],
+      );
+      expect(result.hasNextPage, data['total_pages'] == 3);
+    }
+  });
+
+  test(
+    'search rejects malformed metadata and unexpected response pages',
+    () async {
+      for (final data in [
+        {'results': []},
+        {'page': 1, 'total_pages': -1, 'results': []},
+        {'page': 1.0, 'total_pages': 1, 'results': []},
+        {'page': 2, 'total_pages': 2, 'results': []},
+        {'page': 1, 'total_pages': '2', 'results': []},
+        {
+          'page': 1,
+          'total_pages': 0,
+          'results': [movie(1, 'Movie', null)],
+        },
+        {'page': 1, 'total_pages': 1, 'results': {}},
+      ]) {
+        final repo = repository((_) async => json(data));
+        await expectLater(
+          repo.search(const MovieQuery('Movie')),
+          throwsA(failure(FailureKind.invalidData)),
+        );
+      }
+    },
+  );
 
   test('maps category endpoints and keeps missing dates last', () async {
     final paths = <String>[];

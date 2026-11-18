@@ -19,6 +19,7 @@ Desenvolvido originalmente para um processo seletivo, o projeto foi retomado com
 
 - **Exploração de filmes:** navegue pelas categorias da tela inicial, incluindo populares e melhor avaliados.
 - **Busca por título e ano:** encontre filmes e refine a pesquisa com o formato `Harry Potter (2009)`.
+- **Rolagem infinita:** carregue mais resultados ao descer a lista, mantendo a ordem retornada pelo TMDB.
 - **Detalhes completos:** consulte sinopse, gêneros, duração, avaliação, direção, elenco e dados de produção.
 - **Trailers e filmes similares:** assista ao trailer no YouTube e descubra títulos relacionados.
 - **Continuidade na navegação:** volte dos detalhes sem perder sua busca e os resultados.
@@ -51,7 +52,7 @@ As [decisões de arquitetura](docs/adr/0001-feature-first-cubit.md) estão dispo
 
 ## ✅ Qualidade
 
-O projeto conta com **39 testes automatizados**, cobrindo integração HTTP simulada, tratamento de dados, transições de estado, concorrência, navegação e recuperação de falhas.
+O projeto conta com **56 testes automatizados**, cobrindo integração HTTP simulada, tratamento de dados, transições de estado, concorrência, navegação e recuperação de falhas.
 
 A CI verifica formatação, análise estática, testes e empacotamento Android. O funcionamento em **Android e iOS** foi confirmado em smoke tests pelo autor.
 

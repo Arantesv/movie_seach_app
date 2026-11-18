@@ -1,3 +1,4 @@
+import 'package:movie_search_app/features/movies/models/movie_search_page.dart';
 import 'package:movie_search_app/features/movies/models/cast_member.dart';
 import 'package:movie_search_app/features/movies/models/movie_category.dart';
 import 'package:movie_search_app/features/movies/models/movie_details.dart';
@@ -9,6 +10,8 @@ const testMovie = MovieSummary(id: 1, title: 'Test movie');
 
 class FakeMoviesRepository implements MoviesRepository {
   final queries = <MovieQuery>[];
+  final searchPages = <int>[];
+  Future<MovieSearchPage> Function(MovieQuery, int)? onSearchPage;
   final categoryCalls = <MovieCategory, int>{};
   int detailCalls = 0;
   int castCalls = 0;
@@ -23,9 +26,15 @@ class FakeMoviesRepository implements MoviesRepository {
   Future<List<MovieSummary>> Function(int)? onSimilar;
 
   @override
-  Future<List<MovieSummary>> search(MovieQuery query) async {
+  Future<MovieSearchPage> search(MovieQuery query, {int page = 1}) async {
     queries.add(query);
-    return onSearch == null ? [testMovie] : await onSearch!(query);
+    searchPages.add(page);
+    if (onSearchPage != null) return onSearchPage!(query, page);
+    return MovieSearchPage(
+      movies: onSearch == null ? [testMovie] : await onSearch!(query),
+      page: page,
+      totalPages: 1,
+    );
   }
 
   @override
