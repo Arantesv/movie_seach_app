@@ -17,7 +17,7 @@ Desenvolvido originalmente para um processo seletivo, o projeto foi retomado com
 
 ## ✨ Funcionalidades
 
-- **Exploração de filmes:** navegue pelas categorias da tela inicial, incluindo populares e melhor avaliados.
+- **Exploração de filmes:** navegue pelas categorias da tela inicial, incluindo filmes em cartaz no Brasil, populares e melhor avaliados.
 - **Busca por título e ano:** encontre filmes e refine a pesquisa com o formato `Harry Potter (2009)`.
 - **Rolagem infinita:** carregue mais resultados ao descer a lista, mantendo a ordem retornada pelo TMDB.
 - **Detalhes completos:** consulte sinopse, gêneros, duração, avaliação, direção, elenco e dados de produção.

@@ -1,1 +1,1 @@
-enum MovieCategory { upcoming, topRated, popular }
+enum MovieCategory { nowPlaying, topRated, popular }

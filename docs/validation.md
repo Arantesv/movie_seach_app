@@ -49,3 +49,13 @@ A release e a tag `v1.0.0`, publicadas em 2024-08-20, foram preservadas. Esta ev
 - Smoke tests desta funcionalidade em Android/iOS serão executados manualmente pelo autor, conforme combinado. Permanecem pendentes; a confirmação da versão 1.1.0 acima não cobre automaticamente esta entrega.
 
 Roteiro pendente: buscar um título com várias páginas, rolar até carregar novas páginas, abrir detalhes e retornar, trocar abas, iniciar nova pesquisa e interromper a conexão durante a carga seguinte. Confirmar que o retry preserva os resultados e a posição.
+
+## Em Cartaz no Brasil — 2026-11-18
+
+A categoria agora usa `MovieCategory.nowPlaying`, endpoint `movie/now_playing`, `region=BR` e idioma `pt-BR`. A região é aplicada apenas a essa categoria. Os testes verificam o caminho e os parâmetros; populares e melhor avaliados permanecem sem alteração.
+
+56 testes automatizados e análise estática passaram. Build configurado instalado no emulador Android 17 / API 37 (`emulator-5554`). Smoke realizado pelo agente: rótulo Em Cartaz, carregamento das três categorias, busca Star, novas páginas, falha de conexão com resultados mantidos e retry após reconectar. Sem entradas no buffer de crashes durante a verificação.
+
+A execução Android anterior também verificou filtro por ano, estados vazio/erro inicial, detalhes, similares, trailer e preservação da posição entre abas. Evidências locais: `C:/Users/Administrator/Documents/movie-smoke-20261118/` (XML, screenshots e logs). O iOS não foi reexecutado nesta correção; não se presume novo smoke iOS a partir da validação anterior.
+
+`now_playing` é uma seleção regional do TMDB por janela de lançamentos, não uma confirmação de sessões em cinemas específicos. Datas principais e relançamentos podem diferir.

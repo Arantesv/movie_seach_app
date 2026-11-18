@@ -20,11 +20,16 @@ class TmdbMoviesRepository implements MoviesRepository {
   Future<List<MovieSummary>> getCategory(MovieCategory category) =>
       _guard(() async {
         final endpoint = switch (category) {
-          MovieCategory.upcoming => 'upcoming',
+          MovieCategory.nowPlaying => 'now_playing',
           MovieCategory.topRated => 'top_rated',
           MovieCategory.popular => 'popular',
         };
-        return _movies(await _service.category(endpoint));
+        return _movies(
+          await _service.category(
+            endpoint,
+            region: category == MovieCategory.nowPlaying ? 'BR' : null,
+          ),
+        );
       });
 
   @override

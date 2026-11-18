@@ -37,8 +37,8 @@ void main() {
     (tester) async {
       final repository = FakeMoviesRepository();
       await start(tester, repository);
-      expect(find.text('Em Breve'), findsOneWidget);
-      expect(find.text('Em Cartaz'), findsNothing);
+      expect(find.text('Em Cartaz'), findsOneWidget);
+      expect(find.text('Em Breve'), findsNothing);
       expect(repository.categoryCalls.values, everyElement(1));
       await tester.tap(find.text('Buscar'));
       await tester.pumpAndSettle();
@@ -78,7 +78,7 @@ void main() {
   testWidgets('home retry requests only the failed category', (tester) async {
     final repository = FakeMoviesRepository()
       ..onCategory = (category) async {
-        if (category == MovieCategory.upcoming) {
+        if (category == MovieCategory.nowPlaying) {
           throw const AppFailure(FailureKind.server);
         }
         return [];
@@ -88,7 +88,7 @@ void main() {
     repository.onCategory = (_) async => [];
     await tester.tap(find.text('Tentar novamente'));
     await tester.pumpAndSettle();
-    expect(repository.categoryCalls[MovieCategory.upcoming], 2);
+    expect(repository.categoryCalls[MovieCategory.nowPlaying], 2);
     expect(repository.categoryCalls[MovieCategory.popular], 1);
     expect(repository.categoryCalls[MovieCategory.topRated], 1);
     expect(find.text('Tentar novamente'), findsNothing);
